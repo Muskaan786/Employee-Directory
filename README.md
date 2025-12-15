@@ -2,6 +2,12 @@
 
 A full-stack application for searching and viewing employee information with optimized search performance.
 
+## 🌐 Live Demo
+
+- **Frontend:** https://employee-directory-nine-wheat.vercel.app
+- **Backend:** Deploy to Render following [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
+- **Repository:** https://github.com/Muskaan786/Employee-Directory
+
 ## Tech Stack
 
 - **Frontend**: React 18 + Vite + TypeScript
