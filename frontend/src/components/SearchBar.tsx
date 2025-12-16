@@ -30,8 +30,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className="search-bar-container">
-      <div className="search-bar">
+    <div className="search-bar">
         <svg
           className="search-icon"
           width="20"
@@ -80,7 +79,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
             </svg>
           </button>
         )}
-      </div>
       
       {value && value.length < 2 && (
         <p className="search-hint">

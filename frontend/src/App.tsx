@@ -21,7 +21,6 @@ import './App.css';
 function App() {
   // State management
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchField, setSearchField] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('All Departments');
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
@@ -68,28 +67,15 @@ function App() {
   useEffect(() => {
     let filtered = allEmployees;
 
-    // Apply search filter
+    // Apply search filter (searches across all fields)
     if (debouncedSearchTerm && debouncedSearchTerm.length >= 2) {
       const searchLower = debouncedSearchTerm.toLowerCase();
-      filtered = filtered.filter((emp) => {
-        if (searchField === 'all') {
-          return (
-            emp.name.toLowerCase().includes(searchLower) ||
-            emp.email.toLowerCase().includes(searchLower) ||
-            emp.department.toLowerCase().includes(searchLower) ||
-            emp.designation.toLowerCase().includes(searchLower)
-          );
-        } else if (searchField === 'name') {
-          return emp.name.toLowerCase().includes(searchLower);
-        } else if (searchField === 'email') {
-          return emp.email.toLowerCase().includes(searchLower);
-        } else if (searchField === 'department') {
-          return emp.department.toLowerCase().includes(searchLower);
-        } else if (searchField === 'designation') {
-          return emp.designation.toLowerCase().includes(searchLower);
-        }
-        return true;
-      });
+      filtered = filtered.filter((emp) => 
+        emp.name.toLowerCase().includes(searchLower) ||
+        emp.email.toLowerCase().includes(searchLower) ||
+        emp.department.toLowerCase().includes(searchLower) ||
+        emp.designation.toLowerCase().includes(searchLower)
+      );
     }
 
     // Apply department filter
@@ -98,7 +84,7 @@ function App() {
     }
 
     setEmployees(filtered);
-  }, [allEmployees, debouncedSearchTerm, searchField, selectedDepartment]);
+  }, [allEmployees, debouncedSearchTerm, selectedDepartment]);
 
   // Get unique departments from employees
   const uniqueDepartments = Array.from(
@@ -149,19 +135,19 @@ function App() {
             searchField={searchField}
             onSearchFieldChange={setSearchField}
           />
+div className="search-bar-container">
+            <SearchBar
+              value={searchTerm}
+              onChange={setSearchTerm}
+              disabled={isLoading}
+            />
 
-          <EmployeeList
-            employees={employees}
-            isLoading={isLoading}
-            error={error}
-            searchTerm={debouncedSearchTerm}
-          />
-        </div>
-      </main>
-
-      <footer className="app-footer">
-        <p>
-          Built with React + Vite + TypeScript | Backend: FastAPI + MySQL
+            <FilterBar
+              selectedDepartment={selectedDepartment}
+              onDepartmentChange={setSelectedDepartment}
+              departments={uniqueDepartments}
+            />
+          </divuilt with React + Vite + TypeScript | Backend: FastAPI + MySQL
         </p>
       </footer>
     </div>
