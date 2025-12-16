@@ -21,6 +21,7 @@ import './App.css';
 function App() {
   // State management
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchField, setSearchField] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('All Departments');
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
@@ -35,25 +36,14 @@ function App() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        // Only search if term is empty or at least 2 characters
-        if (debouncedSearchTerm && debouncedSearchTerm.length < 2) {
-          return;
-        }
-
         setIsLoading(true);
         setError(null);
 
-        // Fetch employees with debounced search term
-        const response = await employeeAPI.searchEmployees(
-          debouncedSearchTerm || undefined,
-          50,
-          0
-        );
-
+        // Fetch all employees
+        const response = await employeeAPI.searchEmployees(undefined, 50, 0);
         setAllEmployees(response.employees);
       } catch (err) {
         if (err instanceof Error) {
-          // Don't show error for cancelled requests
           if (err.message === 'Request cancelled') {
             return;
           }
@@ -69,11 +59,10 @@ function App() {
 
     fetchEmployees();
 
-    // Cleanup function to cancel pending requests
     return () => {
       employeeAPI.cancelPendingRequest();
     };
-  }, [debouncedSearchTerm]);
+  }, []);
 
   // Filter employees by department
   useEffect(() => {
@@ -87,17 +76,41 @@ function App() {
     }
   }, [allEmployees, selectedDepartment]);
 
-  // Get unique departments from employees
-  const uniqueDepartments = Array.from(
-    new Set(allEmployees.map((emp) => emp.department))
-  ).sort();
+  // Get unique departmensearch and department
+  useEffect(() => {
+    let filtered = allEmployees;
 
-  return (
-    <div className="app">
-      <header className="app-header">
-        <div className="header-content">
-          <div className="logo-container">
-            <svg
+    // Apply search filter
+    if (debouncedSearchTerm && debouncedSearchTerm.length >= 2) {
+      const searchLower = debouncedSearchTerm.toLowerCase();
+      filtered = filtered.filter((emp) => {
+        if (searchField === 'all') {
+          return (
+            emp.name.toLowerCase().includes(searchLower) ||
+            emp.email.toLowerCase().includes(searchLower) ||
+            emp.department.toLowerCase().includes(searchLower) ||
+            emp.designation.toLowerCase().includes(searchLower)
+          );
+        } else if (searchField === 'name') {
+          return emp.name.toLowerCase().includes(searchLower);
+        } else if (searchField === 'email') {
+          return emp.email.toLowerCase().includes(searchLower);
+        } else if (searchField === 'department') {
+          return emp.department.toLowerCase().includes(searchLower);
+        } else if (searchField === 'designation') {
+          return emp.designation.toLowerCase().includes(searchLower);
+        }
+        return true;
+      });
+    }
+
+    // Apply department filter
+    if (selectedDepartment !== 'All Departments') {
+      filtered = filtered.filter((emp) => emp.department === selectedDepartment);
+    }
+
+    setEmployees(filtered);
+  }, [allEmployees, debouncedSearchTerm, searchField
               className="logo-icon"
               width="32"
               height="32"
@@ -116,11 +129,7 @@ function App() {
             <h1 className="app-title">Employee Directory</h1>
           </div>
           <p className="app-subtitle">
-           FilterBar
-            selectedDepartment={selectedDepartment}
-            onDepartmentChange={setSelectedDepartment}            departments={uniqueDepartments}          />
-
-          < Search and discover employees across the organization
+            Search and discover employees across the organization
           </p>
         </div>
       </header>
@@ -131,6 +140,14 @@ function App() {
             value={searchTerm}
             onChange={setSearchTerm}
             disabled={isLoading}
+          />
+
+          <FilterBar
+            selectedDepartment={selectedDepartment}
+            onDepartmentChange={setSelectedDepartment}
+            departments={uniqueDepartments}
+            searchField={searchField}
+            onSearchFieldChange={setSearchField}
           />
 
           <EmployeeList
