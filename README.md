@@ -5,8 +5,93 @@ A full-stack application for searching and viewing employee information with opt
 ## 🌐 Live Demo
 
 - **Frontend:** https://employee-directory-nine-wheat.vercel.app
-- **Backend:** Deploy to Render following [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
+- **Backend:** https://employee-directory-tf4x.onrender.com
 - **Repository:** https://github.com/Muskaan786/Employee-Directory
+
+---
+
+## 🚀 Quick Start - Running Locally
+
+### Prerequisites
+
+- **Node.js** 18+ and npm
+- **Python** 3.9+
+- **MySQL** 8.0+
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/Muskaan786/Employee-Directory.git
+cd Employee-Directory
+```
+
+### Step 2: Setup MySQL Database
+
+```bash
+# Login to MySQL
+mysql -u root -p
+
+# Create database
+CREATE DATABASE employee_directory;
+EXIT;
+```
+
+### Step 3: Setup and Run Backend
+
+```bash
+# Navigate to backend folder
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate  # On macOS/Linux
+# venv\Scripts\activate   # On Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file
+echo "DATABASE_URL=mysql+pymysql://root@localhost:3306/employee_directory" > .env
+echo "CORS_ORIGINS=http://localhost:5173" >> .env
+
+# Initialize database (creates tables)
+python init_db.py
+
+# Seed sample data (50 employees)
+python seed_data.py
+
+# Start backend server
+uvicorn main:app --reload
+```
+
+**Backend is now running at:** http://localhost:8000  
+**API Docs:** http://localhost:8000/docs
+
+### Step 4: Setup and Run Frontend
+
+Open a **new terminal** window:
+
+```bash
+# Navigate to frontend folder
+cd frontend
+
+# Install dependencies
+npm install
+
+# Create .env file
+echo "VITE_API_BASE_URL=http://localhost:8000" > .env
+
+# Start frontend development server
+npm run dev
+```
+
+**Frontend is now running at:** http://localhost:5173
+
+### 🎉 That's it! Open http://localhost:5173 in your browser
+
+---
 
 ## Tech Stack
 
@@ -89,82 +174,52 @@ For very large datasets (100K+ employees), consider:
 - MySQL 8.0+
 - Git
 
-### 1. Clone the Repository
+## Common Commands
+
+### Backend Commands
 
 ```bash
-git clone <your-repository-url>
-cd employee-directory-search
-```
-
-### 2. Database Setup
-
-```bash
-# Login to MySQL
-mysql -u root -p
-
-# Create database
-CREATE DATABASE employee_directory;
-
-# Create user (optional, recommended for security)
-CREATE USER 'emp_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON employee_directory.* TO 'emp_user'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-### 3. Backend Setup
-
-```bash
-cd backend
-
-# Create virtual environment
-python -m venv venv
-
 # Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-# venv\Scripts\activate
+source backend/venv/bin/activate  # macOS/Linux
+backend\venv\Scripts\activate     # Windows
 
-# Install dependencies
-pip install -r requirements.txt
+# Run backend server
+cd backend && uvicorn main:app --reload
 
-# Create .env file
-cp .env.example .env
+# Initialize database
+cd backend && python init_db.py
 
-# Edit .env file with your database credentials
-# DATABASE_URL=mysql+pymysql://emp_user:your_password@localhost:3306/employee_directory
+# Seed sample data
+cd backend && python seed_data.py
 
-# Run database migrations (creates tables)
-python init_db.py
-
-# (Optional) Seed sample data
-python seed_data.py
-
-# Start the backend server
-uvicorn main:app --reload --port 8000
+# View API docs
+# Open http://localhost:8000/docs
 ```
 
-Backend will run on: http://localhost:8000
-API Documentation: http://localhost:8000/docs
-
-### 4. Frontend Setup
+### Frontend Commands
 
 ```bash
-cd frontend
+# Run frontend dev server
+cd frontend && npm run dev
 
-# Install dependencies
-npm install
+# Build for production
+cd frontend && npm run build
 
-# Create .env file
-cp .env.example .env
-
-# Edit .env file if needed (default: VITE_API_BASE_URL=http://localhost:8000)
-
-# Start development server
-npm run dev
+# Preview production build
+cd frontend && npm run preview
 ```
 
-Frontend will run on: http://localhost:5173
+### Convenience Scripts
+
+For easier local development, use the provided scripts:
+
+```bash
+# Start backend (from project root)
+./start-backend.sh
+
+# Start frontend (from project root)
+./start-frontend.sh
+```
 
 ## API Endpoints
 
