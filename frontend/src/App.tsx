@@ -122,20 +122,7 @@ function App() {
 
       <main className="app-main">
         <div className="container">
-          <SearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            disabled={isLoading}
-          />
-
-          <FilterBar
-            selectedDepartment={selectedDepartment}
-            onDepartmentChange={setSelectedDepartment}
-            departments={uniqueDepartments}
-            searchField={searchField}
-            onSearchFieldChange={setSearchField}
-          />
-div className="search-bar-container">
+          <div className="search-bar-container">
             <SearchBar
               value={searchTerm}
               onChange={setSearchTerm}
@@ -147,7 +134,20 @@ div className="search-bar-container">
               onDepartmentChange={setSelectedDepartment}
               departments={uniqueDepartments}
             />
-          </divuilt with React + Vite + TypeScript | Backend: FastAPI + MySQL
+          </div>
+
+          <EmployeeList
+            employees={employees}
+            isLoading={isLoading}
+            error={error}
+            searchTerm={debouncedSearchTerm}
+          />
+        </div>
+      </main>
+
+      <footer className="app-footer">
+        <p>
+          Built with React + Vite + TypeScript | Backend: FastAPI + MySQL
         </p>
       </footer>
     </div>
