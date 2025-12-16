@@ -2,7 +2,7 @@
 
 A full-stack application for searching and viewing employee information with optimized search performance.
 
-## 🌐 Live Demo
+## Live Demo
 
 - **Frontend:** https://employee-directory-nine-wheat.vercel.app
 - **Backend:** https://employee-directory-tf4x.onrender.com
@@ -10,7 +10,7 @@ A full-stack application for searching and viewing employee information with opt
 
 ---
 
-## 🚀 Quick Start - Running Locally
+## Quick Start - Running Locally
 
 ### Prerequisites
 
@@ -89,7 +89,9 @@ npm run dev
 
 **Frontend is now running at:** http://localhost:5173
 
-### 🎉 That's it! Open http://localhost:5173 in your browser
+### Access the Application
+
+Open your browser and navigate to http://localhost:5173
 
 ---
 
