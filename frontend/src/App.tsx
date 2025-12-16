@@ -64,19 +64,7 @@ function App() {
     };
   }, []);
 
-  // Filter employees by department
-  useEffect(() => {
-    if (selectedDepartment === 'All Departments') {
-      setEmployees(allEmployees);
-    } else {
-      const filtered = allEmployees.filter(
-        (emp) => emp.department === selectedDepartment
-      );
-      setEmployees(filtered);
-    }
-  }, [allEmployees, selectedDepartment]);
-
-  // Get unique departmensearch and department
+  // Filter employees by search and department
   useEffect(() => {
     let filtered = allEmployees;
 
@@ -110,7 +98,19 @@ function App() {
     }
 
     setEmployees(filtered);
-  }, [allEmployees, debouncedSearchTerm, searchField
+  }, [allEmployees, debouncedSearchTerm, searchField, selectedDepartment]);
+
+  // Get unique departments from employees
+  const uniqueDepartments = Array.from(
+    new Set(allEmployees.map((emp) => emp.department))
+  ).sort();
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+          <div className="logo-container">
+            <svg
               className="logo-icon"
               width="32"
               height="32"
