@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
+import FilterBar from './components/FilterBar';
 import EmployeeList from './components/EmployeeList';
 import { employeeAPI } from './services/api';
 import { useDebounce } from './hooks/useDebounce';
@@ -12,14 +13,17 @@ import './App.css';
  * Features implemented:
  * 1. Debounced search (300ms delay) - prevents excessive API calls
  * 2. Request cancellation - cancels previous pending requests
- * 3. Proper state management - loading, error, empty, success states
- * 4. Minimum search length validation (2 characters)
- * 5. Environment-based API configuration
+ * 3. Department filtering for precise results
+ * 4. Proper state management - loading, error, empty, success states
+ * 5. Minimum search length validation (2 characters)
+ * 6. Environment-based API configuration
  */
 function App() {
   // State management
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState('All Departments');
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -27,6 +31,7 @@ function App() {
   // Only triggers API call 300ms after user stops typing
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
+  // Fetch employees from API
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -45,7 +50,7 @@ function App() {
           0
         );
 
-        setEmployees(response.employees);
+        setAllEmployees(response.employees);
       } catch (err) {
         if (err instanceof Error) {
           // Don't show error for cancelled requests
@@ -56,7 +61,7 @@ function App() {
         } else {
           setError('Failed to fetch employees. Please check if the backend is running.');
         }
-        setEmployees([]);
+        setAllEmployees([]);
       } finally {
         setIsLoading(false);
       }
@@ -69,6 +74,23 @@ function App() {
       employeeAPI.cancelPendingRequest();
     };
   }, [debouncedSearchTerm]);
+
+  // Filter employees by department
+  useEffect(() => {
+    if (selectedDepartment === 'All Departments') {
+      setEmployees(allEmployees);
+    } else {
+      const filtered = allEmployees.filter(
+        (emp) => emp.department === selectedDepartment
+      );
+      setEmployees(filtered);
+    }
+  }, [allEmployees, selectedDepartment]);
+
+  // Get unique departments from employees
+  const uniqueDepartments = Array.from(
+    new Set(allEmployees.map((emp) => emp.department))
+  ).sort();
 
   return (
     <div className="app">
@@ -94,7 +116,11 @@ function App() {
             <h1 className="app-title">Employee Directory</h1>
           </div>
           <p className="app-subtitle">
-            Search and discover employees across the organization
+           FilterBar
+            selectedDepartment={selectedDepartment}
+            onDepartmentChange={setSelectedDepartment}            departments={uniqueDepartments}          />
+
+          < Search and discover employees across the organization
           </p>
         </div>
       </header>
