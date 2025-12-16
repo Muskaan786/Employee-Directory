@@ -263,22 +263,35 @@ GET /health
 
 ## Environment Variables
 
-### Backend (.env)
+### Local Development
 
-See `backend/.env.example` for template:
+**Backend (.env)** - See `backend/.env.example`:
 
 ```env
 DATABASE_URL=mysql+pymysql://username:password@localhost:3306/employee_directory
 CORS_ORIGINS=http://localhost:5173
 ```
 
-### Frontend (.env)
-
-See `frontend/.env.example` for template:
+**Frontend (.env)** - See `frontend/.env.example`:
 
 ```env
 VITE_API_BASE_URL=http://localhost:8000
 ```
+
+### Production Configuration
+
+**Frontend (Vercel)**:
+- Set in Vercel Dashboard → Settings → Environment Variables
+- `VITE_API_BASE_URL=https://employee-directory-tf4x.onrender.com`
+
+**Backend (Render)**:
+- Set in Render Dashboard → Environment tab
+- `DATABASE_URL=mysql+pymysql://user:password@yamabiko.proxy.rlwy.net:45576/railway`
+- `CORS_ORIGINS=https://employee-directory-nine-wheat.vercel.app`
+
+**Database (Railway)**:
+- MySQL database hosted on Railway
+- Connection string configured in Render backend
 
 ## Running Tests
 
