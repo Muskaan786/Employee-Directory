@@ -18,6 +18,60 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on startup."""
+    try:
+        from database import engine, Base, SessionLocal
+        from models import Employee
+        import random
+        from datetime import date, timedelta
+        
+        logger.info("Initializing database...")
+        
+        # Create tables if they don't exist
+        Base.metadata.create_all(bind=engine)
+        logger.info("✓ Database tables ready")
+        
+        # Check if database has data
+        db = SessionLocal()
+        try:
+            employee_count = db.query(Employee).count()
+            
+            if employee_count == 0:
+                logger.info("No employees found. Seeding database with sample data...")
+                
+                # Sample data
+                employees_data = [
+                    {"name": "Rahul Kumar", "email": "rahul.kumar@company.com", "department": "Engineering", 
+                     "designation": "Software Engineer", "date_of_joining": date(2023, 1, 15)},
+                    {"name": "Priya Sharma", "email": "priya.sharma@company.com", "department": "Product", 
+                     "designation": "Product Manager", "date_of_joining": date(2022, 8, 20)},
+                    {"name": "Amit Singh", "email": "amit.singh@company.com", "department": "Engineering", 
+                     "designation": "Senior Software Engineer", "date_of_joining": date(2021, 3, 10)},
+                    {"name": "Sneha Patel", "email": "sneha.patel@company.com", "department": "Design", 
+                     "designation": "UI/UX Designer", "date_of_joining": date(2023, 5, 1)},
+                    {"name": "Vikram Gupta", "email": "vikram.gupta@company.com", "department": "Marketing", 
+                     "designation": "Marketing Manager", "date_of_joining": date(2022, 11, 15)},
+                ]
+                
+                for emp_data in employees_data:
+                    employee = Employee(**emp_data)
+                    db.add(employee)
+                
+                db.commit()
+                logger.info(f"✓ Added {len(employees_data)} sample employees")
+            else:
+                logger.info(f"✓ Database already has {employee_count} employees")
+                
+        finally:
+            db.close()
+            
+    except Exception as e:
+        logger.error(f"Database initialization failed: {str(e)}")
+        # Don't crash the app, just log the error
+
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
