@@ -12,7 +12,7 @@ A full-stack application for searching and viewing employee information with opt
 
 - **Frontend**: React 18 + Vite + TypeScript
 - **Backend**: Python 3.9+ + FastAPI
-- **Database**: MySQL 8.0
+- **Database**: MySQL 8.0 (local development) / PostgreSQL (production on Render)
 
 ## Project Structure
 
@@ -26,13 +26,27 @@ A full-stack application for searching and viewing employee information with opt
 
 ## Database Design
 
-### Why MySQL?
+### Database Choice
+
+**Local Development**: MySQL 8.0  
+**Production Deployment**: PostgreSQL (Render free tier)
+
+Both databases are supported through SQLAlchemy ORM, making the codebase database-agnostic.
+
+### Why Relational Database?
 
 1. **Structured Data**: Employee data has a fixed schema, making relational databases ideal
 2. **ACID Compliance**: Ensures data consistency and reliability
-3. **Indexing**: MySQL's B-tree indexes enable fast text searches on name and department
+3. **Indexing**: B-tree indexes enable fast text searches on name and department
 4. **Scalability**: Handles millions of records efficiently with proper indexing
 5. **Connection Pooling**: Supports multiple concurrent connections efficiently
+
+### Why PostgreSQL for Production?
+
+- Free tier available on Render (MySQL not offered)
+- Excellent performance and reliability
+- Full compatibility with SQLAlchemy ORM
+- Same indexing capabilities as MySQL
 
 ### Database Schema
 
