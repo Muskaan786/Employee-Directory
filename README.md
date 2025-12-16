@@ -2,15 +2,30 @@
 
 A full-stack application for searching and viewing employee information with optimized search performance.
 
-## Live Demo
+## Live Production Demo
 
-- **Frontend:** https://employee-directory-nine-wheat.vercel.app
-- **Backend:** https://employee-directory-tf4x.onrender.com
+- **Frontend (Vercel):** https://employee-directory-nine-wheat.vercel.app
+- **Backend (Render):** https://employee-directory-tf4x.onrender.com
+- **Database (Railway):** MySQL with 50 sample employees
 - **Repository:** https://github.com/Muskaan786/Employee-Directory
+
+**Note:** Render free tier sleeps after 15 minutes of inactivity. First request may take 30-50 seconds to wake up.
 
 ---
 
-## Quick Start - Running Locally
+## Table of Contents
+
+- [Local Development Setup](#local-development-setup)
+- [Production Deployment](#production-deployment)
+- [Tech Stack](#tech-stack)
+- [Database Design](#database-design)
+- [Performance Optimization](#search-performance-optimization)
+- [API Documentation](#api-endpoints)
+- [Architecture](#architecture)
+
+---
+
+## Local Development Setup
 
 ### Prerequisites
 
@@ -89,9 +104,87 @@ npm run dev
 
 **Frontend is now running at:** http://localhost:5173
 
-### Access the Application
+### Step 5: Access the Application
 
 Open your browser and navigate to http://localhost:5173
+
+---
+
+## Production Deployment
+
+### Development
+- **Frontend**: React 18 + Vite + TypeScript
+- **Backend**: Python 3.9+ + FastAPI
+- **Database**: MySQL 8.0 (local)
+
+### Production
+- **Frontend Hosting**: Vercel
+- **Backend Hosting**: Render
+- **Database Hosting**: Railway (MySQL)
+- **Version Control**: GitHubVercel)
+
+**Live URL:** https://employee-directory-nine-wheat.vercel.app
+
+**Steps to Deploy:**
+
+1. Push code to GitHub repository
+2. Go to [vercel.com](https://vercel.com) and login
+3. Click "New Project" → Import your GitHub repository
+4. Configure:
+   - **Framework Preset:** Vite
+   - **Root Directory:** `frontend`
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+5. Add Environment Variable:
+   - **Key:** `VITE_API_BASE_URL`
+   - **Value:** `https://employee-directory-tf4x.onrender.com`
+6. Click "Deploy"
+
+**Automatic Deployments:** Every push to `main` branch triggers automatic redeployment.
+
+### Backend Deployment (Render)
+
+**Live URL:** https://employee-directory-tf4x.onrender.com
+
+**Steps to Deploy:**
+
+1. Go to [render.com](https://render.com) and login with GitHub
+2. Click "New +" → "Web Service"
+3. Connect your GitHub repository
+4. Configure:
+   - **Name:** `employee-directory-tf4x`
+   - **Root Directory:** `backend`
+   - **Environment:** Python 3
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+5. Add Environment Variables:
+   - `DATABASE_URL`: `mysql+pymysql://user:pass@yamabiko.proxy.rlwy.net:45576/railway`
+   - `CORS_ORIGINS`: `https://employee-directory-nine-wheat.vercel.app`
+6. Click "Create Web Service"
+
+**Note:** Free tier spins down after 15 minutes of inactivity.
+
+### Database Setup (Railway)
+
+**Service:** MySQL on Railway
+
+**Steps to Setup:**
+
+1. Go to [railway.app](https://railway.app) and login
+2. Click "New Project" → "Deploy MySQL"
+3. Wait for provisioning (~2 minutes)
+4. Go to MySQL service → **Variables** tab
+5. Find the public connection URL with format:
+   - Host: `yamabiko.proxy.rlwy.net`
+   - Port: `45576` (example)
+   - Database: `railway`
+6. Copy connection string in format:
+   ```
+   mysql+pymysql://root:password@yamabiko.proxy.rlwy.net:45576/railway
+   ```
+7. Use this in Render's `DATABASE_URL` environment variable
+
+**Database Initialization:** The backend automatically creates tables and seeds 50 employees on first startup.
 
 ---
 
@@ -302,23 +395,30 @@ cd backend
 pytest
 ```
 
-### Frontend Tests
+###Local Production Build Testing
 
-```bash
-cd frontend
-npm test
-```
-
-## Building for Production
-
-### Backend
+### Test Backend Production Build
 
 ```bash
 cd backend
 pip install -r requirements.txt
+# Set production environment variables
+export DATABASE_URL="mysql+pymysql://root@localhost:3306/employee_directory"
+export CORS_ORIGINS="http://localhost:4173"
+# Run in production mode
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
+### Test Frontend Production Build
+
+```bash
+cd frontend
+npm run build
+npm run preview
+# Opens at http://localhost:4173
+```
+
+This allows you to test the production build locally before deploying.
 ### Frontend
 
 ```bash
