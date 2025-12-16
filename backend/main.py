@@ -40,22 +40,66 @@ async def startup_event():
             employee_count = db.query(Employee).count()
             
             if employee_count == 0:
-                logger.info("No employees found. Seeding database with sample data...")
+                logger.info("No employees found. Seeding database with 50 sample employees...")
                 
-                # Sample data
-                employees_data = [
-                    {"name": "Rahul Kumar", "email": "rahul.kumar@company.com", "department": "Engineering", 
-                     "designation": "Software Engineer", "date_of_joining": date(2023, 1, 15)},
-                    {"name": "Priya Sharma", "email": "priya.sharma@company.com", "department": "Product", 
-                     "designation": "Product Manager", "date_of_joining": date(2022, 8, 20)},
-                    {"name": "Amit Singh", "email": "amit.singh@company.com", "department": "Engineering", 
-                     "designation": "Senior Software Engineer", "date_of_joining": date(2021, 3, 10)},
-                    {"name": "Sneha Patel", "email": "sneha.patel@company.com", "department": "Design", 
-                     "designation": "UI/UX Designer", "date_of_joining": date(2023, 5, 1)},
-                    {"name": "Vikram Gupta", "email": "vikram.gupta@company.com", "department": "Marketing", 
-                     "designation": "Marketing Manager", "date_of_joining": date(2022, 11, 15)},
-                ]
+                # Sample data arrays
+                first_names = ["Rahul", "Priya", "Amit", "Sneha", "Vikram", "Anjali", "Rohan", "Neha", 
+                              "Arjun", "Pooja", "Karan", "Divya", "Sanjay", "Riya", "Aditya", "Kavya",
+                              "Rajesh", "Meera", "Suresh", "Ananya", "Nikhil", "Shreya", "Varun", "Ishita"]
                 
+                last_names = ["Kumar", "Sharma", "Singh", "Patel", "Gupta", "Reddy", "Rao", "Verma",
+                             "Mehta", "Joshi", "Shah", "Desai", "Nair", "Iyer", "Agarwal", "Chopra"]
+                
+                departments = ["Engineering", "Product", "Design", "Marketing", "Sales", "HR", 
+                              "Finance", "Operations", "Customer Success", "Data Science"]
+                
+                designations = {
+                    "Engineering": ["Software Engineer", "Senior Software Engineer", "Tech Lead", "Engineering Manager"],
+                    "Product": ["Product Manager", "Senior Product Manager", "Product Owner"],
+                    "Design": ["UI/UX Designer", "Senior Designer", "Design Lead"],
+                    "Marketing": ["Marketing Manager", "Content Writer", "SEO Specialist"],
+                    "Sales": ["Sales Executive", "Account Manager", "Sales Manager"],
+                    "HR": ["HR Manager", "HR Executive", "Recruiter"],
+                    "Finance": ["Accountant", "Finance Manager", "Financial Analyst"],
+                    "Operations": ["Operations Manager", "Operations Executive"],
+                    "Customer Success": ["Customer Success Manager", "Support Engineer"],
+                    "Data Science": ["Data Scientist", "Data Analyst", "ML Engineer"]
+                }
+                
+                # Generate 50 employees
+                employees_data = []
+                used_emails = set()
+                
+                for i in range(50):
+                    first_name = random.choice(first_names)
+                    last_name = random.choice(last_names)
+                    name = f"{first_name} {last_name}"
+                    
+                    # Generate unique email
+                    email_base = f"{first_name.lower()}.{last_name.lower()}"
+                    email = f"{email_base}@company.com"
+                    counter = 1
+                    while email in used_emails:
+                        email = f"{email_base}{counter}@company.com"
+                        counter += 1
+                    used_emails.add(email)
+                    
+                    department = random.choice(departments)
+                    designation = random.choice(designations[department])
+                    
+                    # Random date in the last 5 years
+                    days_ago = random.randint(0, 365 * 5)
+                    date_of_joining = date.today() - timedelta(days=days_ago)
+                    
+                    employees_data.append({
+                        "name": name,
+                        "email": email,
+                        "department": department,
+                        "designation": designation,
+                        "date_of_joining": date_of_joining
+                    })
+                
+                # Insert all employees
                 for emp_data in employees_data:
                     employee = Employee(**emp_data)
                     db.add(employee)
